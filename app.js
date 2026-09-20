@@ -241,7 +241,7 @@
                                params: { case_token: c.case_token } })
       });
       var data = await resp.json().catch(function(){ return {}; });
-      if (data.url) { window.location.href = data.url; return; }
+      if (data.checkout_url) { window.location.href = data.checkout_url; return; }
       throw new Error(data.error || "checkout_failed");
     } catch (e) {
       if (btn) { btn.disabled = false; btn.textContent = "Get my appeal packet — $39"; }
