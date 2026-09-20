@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Your appeal packet — TaxTrim</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><span class="mark">T</span> TaxTrim</a>
+    <span class="tiny">Your personal packet</span>
+  </div>
+</header>
+<main class="wrap">
+  <div id="gate" style="display:none">
+    <section class="hero">
+      <h1>Packet not found</h1>
+      <p class="lede">This link is invalid or expired. Packets are personal to the buyer — check your email for your link, or <a href="/check.html">run a free check</a> to start.</p>
+    </section>
+  </div>
+  <div id="packet" style="display:none">
+    <section class="hero no-print">
+      <span class="eyebrow">Your $39 appeal packet</span>
+      <h1 id="p-address">Your appeal packet</h1>
+      <p class="lede" id="p-sub"></p>
+      <button class="btn" id="print-btn" type="button">🖨️ Print / Save as PDF</button>
+      <p class="tiny">Prints cleanly — the complaint narrative, comp table, and instructions are all formatted for the Tax Commission filing.</p>
+    </section>
+    <div class="packet-doc" id="packet-doc"></div>
+    <p class="tiny no-print">Informational tool — not legal or tax advice. Verify every figure against your Notice of Property Value before filing.</p>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <nav><a href="/">Home</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></nav>
+    <p class="disclaimer">© 2026 MehyarSoft LLC. Informational tool — not legal or tax advice.</p>
+  </div>
+</footer>
+<script>
+(function(){
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m];}); }
+  function fmt(n){ if(n==null||isNaN(n)) return "—"; return "$"+Math.round(n).toLocaleString("en-US"); }
+  var token = new URLSearchParams(location.search).get("token") || "";
+
+  async function load(){
+    if (!token) { document.getElementById("gate").style.display=""; return; }
+    try {
+      var resp = await fetch("/api/kit/packet?token=" + encodeURIComponent(token));
+      var data = await resp.json().catch(function(){ return {}; });
+      if (!resp.ok || !data.ok) { document.getElementById("gate").style.display=""; return; }
+      var p = data.packet, c = p.case;
+      document.getElementById("packet").style.display = "";
+      document.getElementById("p-address").textContent = c.address || "Your appeal packet";
+      document.getElementById("p-sub").textContent = (c.borough||"") + " · BBL " + (c.bbl||"") + (c.tax_class ? " · Tax Class "+c.tax_class : "");
+      var comps = (p.comps||[]).map(function(r,i){
+        return "<tr><td>"+(i+1)+"</td><td>"+esc(r.address||"—")+"</td><td>"+fmt(r.price)+"</td><td>"+esc(r.sale_date||"—")+"</td><td>"+(r.distance_mi!=null?Number(r.distance_mi).toFixed(2)+" mi":"—")+"</td></tr>";
+      }).join("");
+      var steps = (p.filing_steps||[]).map(function(s,i){ return "<li><strong>Step "+(i+1)+":</strong> "+esc(s)+"</li>"; }).join("");
+      document.getElementById("packet-doc").innerHTML =
+        "<h2>1 · Your case at a glance</h2>"
+        + "<p><strong>Property:</strong> "+esc(c.address||"—")+" ("+esc(c.borough||"")+"), BBL "+esc(c.bbl||"—")+", Tax Class "+esc(c.tax_class||"—")+"</p>"
+        + "<p><strong>DOF market value:</strong> "+fmt(c.dof_market)+" · <strong>Assessed value:</strong> "+fmt(c.dof_assessed)+"</p>"
+        + "<p><strong>Comparable-sales median:</strong> "+fmt(c.comp_median)+" ("+(c.comp_count||0)+" comps) · <strong>Your percentile:</strong> "+(c.percentile!=null?Math.round(c.percentile)+"th":"—")+"</p>"
+        + "<p><strong>Estimated excess assessment:</strong> "+fmt(c.excess_assessed)+" → <strong>~"+fmt(c.annual_overpay)+"/yr</strong> in tax at the Class "+esc(c.tax_class||"")+" rate.</p>"
+        + "<p class='vintage'>Data as of: assessment roll FY "+esc((p.vintage.assessment_roll||"").replace("FY ",""))+" · comparable sales through "+esc(p.vintage.sales_max_date||"—")+" · tax-rate math estimated with latest published Class 1 rate ("+esc(p.vintage.rate_year||"—")+"). Sources: NYC DOF via NYC Open Data.</p>"
+        + "<h2>2 · Comparable sales</h2>"
+        + "<div class='scroll-x'><table class='comps'><thead><tr><th>#</th><th>Address</th><th>Sale price</th><th>Sale date</th><th>Distance</th></tr></thead><tbody>"+comps+"</tbody></table></div>"
+        + "<h2>3 · Complaint narrative (pre-filled)</h2>"
+        + "<p>Copy this into the NYC Tax Commission's online application, or attach it as your supporting statement:</p>"
+        + "<div class='narrative'>"+p.narrative_html+"</div>"
+        + "<h2>4 · Filing instructions</h2>"
+        + "<p><strong>Deadline: "+esc(p.deadline||"mid-March")+".</strong> File online through the NYC Tax Commission portal; keep your confirmation number.</p>"
+        + "<ol>"+steps+"</ol>"
+        + "<h2>5 · What happens next</h2>"
+        + "<p>After filing, the Tax Commission reviews your application and may schedule a hearing. Bring this packet. Most Class 1 reductions arrive as a revised Notice of Property Value — if the number moves, the savings repeat every year you own the home.</p>"
+        + "<p class='vintage'>Prepared "+esc(p.prepared_at||"")+" · TaxTrim is an informational tool, not legal or tax advice, and does not guarantee a reduction.</p>";
+      document.getElementById("print-btn").addEventListener("click", function(){ window.print(); });
+    } catch(e){ document.getElementById("gate").style.display=""; }
+  }
+  load();
+})();
+</script>
+</body>
+</html>

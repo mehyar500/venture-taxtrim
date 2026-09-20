@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Free assessment check — TaxTrim</title>
+<meta name="description" content="Free 60-second check: is NYC over-assessing your home?">
+<link rel="stylesheet" href="/styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><span class="mark">T</span> TaxTrim</a>
+    <a class="nav-cta" href="/">How it works</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero" id="input-view">
+    <span class="eyebrow">Step 1 of 1 · free</span>
+    <h1>Check your assessment</h1>
+    <p class="lede">Enter your NYC address. We'll pull your official assessment and compare it against recent comparable sales.</p>
+    <div class="hero-card">
+      <form id="lookup-form">
+        <div class="field">
+          <label for="address">Property address</label>
+          <input id="address" type="text" autocomplete="street-address" placeholder="123 Bay Ridge Ave">
+        </div>
+        <div class="field" style="margin-top:12px">
+          <label for="borough">Borough</label>
+          <select id="borough">
+            <option value="">Choose…</option>
+            <option value="3">Brooklyn</option>
+            <option value="4">Queens</option>
+            <option value="1">Manhattan</option>
+            <option value="2">Bronx</option>
+            <option value="5">Staten Island</option>
+          </select>
+        </div>
+        <div class="field" style="margin-top:12px">
+          <label for="bbl">…or enter your 10-digit BBL directly <span class="tiny">(find it on your Notice of Property Value)</span></label>
+          <input id="bbl" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="10" placeholder="e.g. 3012340056">
+        </div>
+        <button class="btn" id="run-btn" type="submit">Run my free check</button>
+        <div class="error" id="form-error"></div>
+      </form>
+    </div>
+    <p class="hint">Class 1 homes (1–3 family) in all five boroughs. The check is IP rate-limited to keep the city's data feed healthy for everyone.</p>
+  </section>
+
+  <section class="hero" id="bbl-view" style="display:none">
+    <span class="eyebrow">One more step</span>
+    <h1>Enter your BBL</h1>
+    <p class="lede">We couldn't resolve that address automatically. Your 10-digit BBL is on your Notice of Property Value (or at nyc.gov/finance) — enter it and we'll run the analysis.</p>
+    <div class="hero-card">
+      <form id="bbl-form">
+        <div class="field">
+          <label for="bbl-manual">10-digit BBL</label>
+          <input id="bbl-manual" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="10" placeholder="e.g. 3012340056">
+        </div>
+        <button class="btn" type="submit">Run my free check</button>
+        <div class="error" id="bbl-error"></div>
+      </form>
+    </div>
+  </section>
+
+  <section id="loading-view" style="display:none">
+    <div class="spinner"><div class="ring"></div><p id="loading-text">Pulling your assessment…</p></div>
+  </section>
+
+  <section id="result-view" style="display:none"></section>
+
+  <div class="sticky-cta" id="result-cta" style="display:none">
+    <a class="btn" href="#paywall" id="cta-packet">Get my $39 appeal packet</a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <nav><a href="/">Home</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></nav>
+    <p class="disclaimer">© 2026 MehyarSoft LLC. Informational tool — not legal or tax advice. Data: NYC DOF via NYC Open Data.</p>
+  </div>
+</footer>
+<script src="/app.js"></script>
+<script>
+(function(){
+  var q = new URLSearchParams(location.search);
+  var pre = q.get('address');
+  if (pre) document.getElementById('address').value = pre;
+  document.getElementById('run-btn').addEventListener('click', function(){
+    var address = document.getElementById('address').value.trim();
+    var bbl = document.getElementById('bbl').value.replace(/\D/g,'');
+    TaxTrim.runCheck({address: address, bbl: bbl});
+  });
+  if (pre) { /* auto-run when arriving from the hero form */ }
+})();
+</script>
+</body>
+</html>

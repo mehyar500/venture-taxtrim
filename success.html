@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Payment received — TaxTrim</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><span class="mark">T</span> TaxTrim</a>
+  </div>
+</header>
+<main class="wrap">
+  <section class="hero">
+    <span class="eyebrow">Payment confirmed</span>
+    <h1>Your packet is being built</h1>
+    <p class="lede" id="status-text">We're drafting your complaint narrative and assembling your appeal packet. This usually takes under a minute.</p>
+  </section>
+  <div class="card" id="status-card">
+    <div class="spinner" id="status-spinner"><div class="ring"></div><p>Building your packet…</p></div>
+    <div id="status-ready" style="display:none">
+      <h3>✅ Your appeal packet is ready</h3>
+      <p>Your comparable-sales analysis, pre-filled Tax Commission complaint, filing instructions, and deadline calendar are assembled.</p>
+      <a class="btn" id="packet-link" href="#">Open my appeal packet</a>
+      <p class="tiny" style="text-align:center;margin-top:10px">A copy was also emailed to you. Keep this link — it's your personal access.</p>
+    </div>
+    <div id="status-failed" style="display:none">
+      <h3>⚠️ The build hit a snag</h3>
+      <p>Your payment went through, but packet generation failed. Tap retry — your purchase is safe.</p>
+      <button class="btn secondary" id="retry-btn" type="button">Retry building my packet</button>
+    </div>
+  </div>
+  <p class="tiny">Questions? Reply to your receipt email — a human reads every reply.</p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <nav><a href="/">Home</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></nav>
+    <p class="disclaimer">© 2026 MehyarSoft LLC. Informational tool — not legal or tax advice.</p>
+  </div>
+</footer>
+<script>
+(function(){
+  var q = new URLSearchParams(location.search);
+  var token = q.get("token") || "";
+  var pollTimer = null;
+
+  async function poll(){
+    try {
+      var resp = await fetch("/api/kit/status?token=" + encodeURIComponent(token));
+      var data = await resp.json().catch(function(){ return {}; });
+      if (!resp.ok || !data.ok) { return; }
+      if (data.status === "ready") {
+        clearInterval(pollTimer);
+        document.getElementById("status-spinner").style.display = "none";
+        document.getElementById("status-ready").style.display = "";
+        document.getElementById("status-text").textContent = "Done — your appeal packet is ready.";
+        document.getElementById("packet-link").href = "/packet.html?token=" + encodeURIComponent(data.access_token || token);
+      } else if (data.status === "failed") {
+        clearInterval(pollTimer);
+        document.getElementById("status-spinner").style.display = "none";
+        document.getElementById("status-failed").style.display = "";
+        document.getElementById("status-text").textContent = "The build hit a snag — retry below.";
+      }
+    } catch (e) { /* keep polling */ }
+  }
+  async function retry(){
+    document.getElementById("status-failed").style.display = "none";
+    document.getElementById("status-spinner").style.display = "";
+    try {
+      await fetch("/api/kit/retry", { method: "POST", headers: {"content-type":"application/json"},
+        body: JSON.stringify({ token: token }) });
+    } catch (e) {}
+    pollTimer = setInterval(poll, 4000); poll();
+  }
+  if (!token) {
+    document.getElementById("status-text").textContent = "Missing access token — this page only works from your checkout link.";
+    document.getElementById("status-spinner").style.display = "none";
+    return;
+  }
+  document.getElementById("retry-btn").addEventListener("click", retry);
+  pollTimer = setInterval(poll, 4000); poll();
+})();
+</script>
+</body>
+</html>

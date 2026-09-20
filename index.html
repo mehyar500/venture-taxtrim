@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TaxTrim — NYC says your home is worth $X. They're often wrong.</title>
+<meta name="description" content="Free 60-second check: is New York City over-assessing your home? Get your verdict free, then the $39 appeal packet with a pre-filled Tax Commission complaint.">
+<link rel="stylesheet" href="/styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><span class="mark">T</span> TaxTrim <small>NYC property-tax appeals</small></a>
+    <a class="nav-cta" href="/check.html">Free check</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <span class="eyebrow">Free verdict · 60 seconds</span>
+    <h1>NYC says your home is worth <span class="strike">$X</span>.<br>They're often wrong.</h1>
+    <p class="lede">Every January, the Department of Finance mails your Notice of Property Value. If the number is too high, you overpay — until you appeal by the March deadline. TaxTrim checks your assessment against real comparable sales, <strong>free</strong>.</p>
+
+    <div class="hero-card">
+      <form id="hero-form" action="/check.html" method="get">
+        <div class="field">
+          <label for="hero-address">Your NYC property address</label>
+          <input id="hero-address" name="address" type="text" inputmode="text" autocomplete="street-address"
+                 placeholder="e.g. 123 Bay Ridge Ave, Brooklyn, NY" required>
+        </div>
+        <button class="btn" type="submit">Check my assessment — free</button>
+      </form>
+      <p class="free-note">The verdict is <strong>free</strong>. The appeal packet is <strong>$39</strong>, only if you want it.</p>
+    </div>
+    <p class="hint">Works for Class 1 homes (1–3 family houses) in Brooklyn, Queens, Staten Island &amp; the Bronx. Know your BBL? You can enter it directly on the next screen.</p>
+  </section>
+
+  <section class="section">
+    <h2>How it works</h2>
+    <p class="sub">Deterministic math on official city data. No guesswork, no AI making up numbers.</p>
+    <div class="card step"><div class="n">1</div><div><h3>Enter your address</h3><p>We resolve it to your property's BBL (borough-block-lot) and pull your official Department of Finance assessment.</p></div></div>
+    <div class="card step"><div class="n">2</div><div><h3>We find your real comps</h3><p>Recent arms-length sales of similar homes near you — same borough, same tax class — ranked by recency and distance.</p></div></div>
+    <div class="card step"><div class="n">3</div><div><h3>You get the verdict, free</h3><p>Likely over-assessed, borderline, or probably fair — plus the estimated dollar gap and your assessment vs. your block's median.</p></div></div>
+    <div class="card step"><div class="n">4</div><div><h3>Appeal with the $39 packet <span class="tiny">(optional)</span></h3><p>Comparable-sales analysis, a pre-filled NYC Tax Commission complaint, step-by-step filing instructions, and a deadline calendar. Print it, file it, done in one evening.</p></div></div>
+  </section>
+
+  <section class="section">
+    <h2>What the numbers look like</h2>
+    <p class="sub">A sample result card — yours is computed live from city data.</p>
+    <div class="card">
+      <span class="verdict-badge over">LIKELY OVER-ASSESSED</span>
+      <div class="vs">
+        <div class="vs-row">
+          <div class="lab"><span>🏛️ NYC says (DOF market value)</span><span class="val">$812,000</span></div>
+          <div class="bar nyc"><i style="width:100%"></i></div>
+        </div>
+        <div class="vs-row">
+          <div class="lab"><span>📊 Comparable sales say</span><span class="val">$694,000</span></div>
+          <div class="bar true"><i style="width:85%"></i></div>
+        </div>
+      </div>
+      <p class="vs-caption">Gap: <strong>$118,000</strong> in market value → roughly <strong>$7,080</strong> in assessed value → about <strong>$1,420/yr</strong> in overpaid tax at the Class 1 rate.</p>
+      <div class="stat-grid">
+        <div class="stat"><div class="k">Your percentile vs comps</div><div class="v bad">91st</div></div>
+        <div class="stat"><div class="k">Comps analyzed</div><div class="v">14</div></div>
+      </div>
+      <p class="tiny">Sample figures for illustration. Your card uses your property's real data. Data vintage is always shown on your result.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>The $39 math</h2>
+    <p class="sub">Stated in arithmetic, not adjectives.</p>
+    <div class="card">
+      <ul class="check-list">
+        <li>Grievance firms take <strong>40–50% of your savings</strong> — on a $1,420/yr win, that's $568–$710 out of your pocket.</li>
+        <li>Flat-fee services take <strong>~25% of first-year savings</strong> — about $355 on the same win.</li>
+        <li>TaxTrim's packet is <strong>$39 flat</strong>. You file it yourself in one evening.</li>
+        <li>The verdict is free either way. If you're fairly assessed, we'll tell you — and you pay nothing.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Honest limits</h2>
+    <div class="card">
+      <p>TaxTrim is an <strong>informational tool</strong> — not legal advice, not tax advice, and not a guarantee of a reduction. Verify every figure against your own Notice of Property Value. You file the appeal yourself; the packet just makes it a one-evening job.</p>
+      <p>We show the <strong>"data as of"</strong> date on every result. If the city's sales feed goes stale, we tell you — we never quietly compute a verdict on old data.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Questions</h2>
+    <details class="faq"><summary>What's the deadline?</summary><p>The NYC Tax Commission filing deadline for Class 1 properties is typically mid-March each year — it moves slightly, so your packet includes that year's exact deadline pulled from the Tax Commission calendar each January. Miss it and the number locks in for the year.</p></details>
+    <details class="faq"><summary>Which homes does this work for?</summary><p>Class 1 properties: 1-, 2-, and 3-family homes in Brooklyn, Queens, Staten Island, and the Bronx. Condos and co-ops (Class 2) use a different valuation method — the check will tell you if your property isn't a fit.</p></details>
+    <details class="faq"><summary>Where does the data come from?</summary><p>NYC Open Data: the Department of Finance property assessment roll, the rolling calendar sales file, and PLUTO for locations. Every result card stamps its data vintage.</p></details>
+    <details class="faq"><summary>What does the $39 packet include?</summary><p>Your comparable-sales analysis with ranked comps, a pre-filled Tax Commission complaint narrative drafted from your exact numbers, step-by-step filing instructions, the deadline calendar, and a printable PDF. Plus an optional $49/year Assessment Watch that monitors your BBL and re-runs every January.</p></details>
+    <details class="faq"><summary>Is my address stored or shared?</summary><p>Your address is used to look up public assessment records and compute your verdict. We never sell your data. Email is only used for your results and the packet you buy — one-click unsubscribe on everything, always. See our <a href="/privacy.html">privacy policy</a>.</p></details>
+  </section>
+
+  <div class="sticky-cta"><a class="btn" href="/check.html">Check my assessment — free</a></div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <nav>
+      <a href="/check.html">Free check</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="/terms.html">Terms</a>
+    </nav>
+    <p class="disclaimer">© 2026 MehyarSoft LLC. TaxTrim is an informational tool, not legal or tax advice, and does not guarantee assessment reductions. Assessment and sales data: NYC Department of Finance via NYC Open Data.</p>
+  </div>
+</footer>
+<script>
+document.getElementById('hero-form').addEventListener('submit', function(e){
+  var v = document.getElementById('hero-address').value.trim();
+  if (!v) { e.preventDefault(); }
+});
+</script>
+</body>
+</html>
