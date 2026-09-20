@@ -132,7 +132,7 @@
       + '<div class="stat-grid">'
       + '<div class="stat"><div class="k">Est. excess assessment</div><div class="v ' + (c.excess_assessed > 0 ? "bad" : "good") + '">' + fmt(c.excess_assessed) + '</div></div>'
       + '<div class="stat"><div class="k">Est. yearly overpayment*</div><div class="v ' + (c.annual_overpay > 0 ? "bad" : "good") + '">' + fmt(c.annual_overpay) + '/yr</div></div>'
-      + '<div class="stat"><div class="k">Your value vs block median</div><div class="v">' + blockVs(c) + '</div></div>'
+      + (c.block_median_market != null && c.dof_market ? '<div class="stat"><div class="k">Your value vs block median</div><div class="v">' + blockVs(c) + '</div></div>' : '')
       + '<div class="stat"><div class="k">Your percentile vs comps</div><div class="v">' + (c.percentile != null ? Math.round(c.percentile) + "th" : "—") + '</div></div>'
       + '</div>'
       + '<p class="vintage">' + vintageLine + '</p>'

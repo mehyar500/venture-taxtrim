@@ -97,19 +97,15 @@ function median(nums) {
   return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
 }
 function num(v) {
-  if (v == null || String(v).trim() === "") return null;
-  const n = Number(String(v).replace(/,/g, ""));
+  const n = Number(String(v == null ? "" : v).replace(/,/g, ""));
   return isFinite(n) ? n : null;
 }
 // BBL from a rolling-sales row: borough + block (5-digit zp) + lot (4-digit zp).
 function salesRowBbl(r) {
   const b = String(r.borough || "").trim();
-  const blRaw = String(r.block || "").trim();
-  const lRaw = String(r.lot || "").trim();
-  if (!/^[1-5]$/.test(b) || !/^\d+$/.test(blRaw) || !/^\d+$/.test(lRaw)) return null;
-  const bl = blRaw.padStart(5, "0");
-  const l = lRaw.padStart(4, "0");
-  if (!/^\d{5}$/.test(bl) || !/^\d{4}$/.test(l)) return null;
+  const bl = String(r.block || "").trim().padStart(5, "0");
+  const l = String(r.lot || "").trim().padStart(4, "0");
+  if (!/^[1-5]$/.test(b) || !/^\d{5}$/.test(bl) || !/^\d{4}$/.test(l)) return null;
   return b + bl + l;
 }
 

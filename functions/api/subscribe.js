@@ -69,10 +69,46 @@ export async function onRequestPost({ request, env }) {
 
     const unsubUrl = `${UNSUB_BASE}?token=${token}`;
 
-    // Result-card delivery: the capture row above is picked up by the
-    // sync_taxtrim_captures.py cron (runs every 15 min), which upserts into
-    // the central email_contact store and sends the transactional verdict
-    // email via Brevo with List-Unsubscribe. Nothing to do here.
+    // Transactional result-card email via the mehyar-web mail relay
+    // (POST /api/taxtrim/mail — secret-gated, honors taxtrim_suppression).
+    // Best effort; the capture is already stored above.
+    if (caseToken && env.TAXTRIM_API_SECRET) {
+      try {
+        const c = await db.prepare(
+          "SELECT address, borough, tax_class, bbl, dof_market, comp_median, comp_count, verdict, " +
+          "excess_market, excess_assessed, annual_overpay, percentile, block_median_market, data_vintage " +
+          "FROM taxtrim_cases WHERE case_token = ?"
+        ).bind(caseToken).first();
+        if (c) {
+          const verdictLabel = { likely_over: "LIKELY OVER-ASSESSED", borderline: "BORDERLINE", probably_fair: "PROBABLY FAIR" }[c.verdict] || c.verdict;
+          const resultUrl = `https://taxtrim.mehyar.us/check.html?case=${encodeURIComponent(caseToken)}`;
+          const subject = `Your TaxTrim verdict: ${verdictLabel} — ${c.address || c.bbl}`;
+          const text =
+            `Your free TaxTrim verdict is in.\n\n` +
+            `Property: ${c.address || ""} (${c.borough || ""}), BBL ${c.bbl || ""}\n` +
+            `Verdict: ${verdictLabel}\n` +
+            `NYC says (market value): $${Math.round(c.dof_market || 0).toLocaleString()}\n` +
+            `Comparable sales median: $${Math.round(c.comp_median || 0).toLocaleString()} (${c.comp_count || 0} comps)\n` +
+            `Estimated excess assessment: $${Math.round(c.excess_assessed || 0).toLocaleString()}\n` +
+            `Estimated yearly overpayment: $${Math.round(c.annual_overpay || 0).toLocaleString()}/yr\n\n` +
+            `See your full result card: ${resultUrl}\n\n` +
+            `Want the appeal packet ($39)? It includes your comparable-sales analysis, a pre-filled Tax Commission complaint, filing instructions, and a printable PDF: ${resultUrl}\n\n` +
+            `TaxTrim is an informational tool, not legal or tax advice.\n\n` +
+            `Unsubscribe: ${unsubUrl}\n` +
+            `MehyarSoft LLC, 228 Park Ave S #92842, New York, NY 10003`;
+          await fetch("https://mehyar.us/api/taxtrim/mail", {
+            method: "POST",
+            headers: { "content-type": "application/json", "authorization": "Bearer " + env.TAXTRIM_API_SECRET,
+                       "user-agent": "TaxTrim-Pages/1.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36" },
+            body: JSON.stringify({
+              to: email, from: "team@mehyar.us", fromName: "TaxTrim",
+              replyTo: "info@mehyar.us", subject, text,
+              headers: { "List-Unsubscribe": `<${unsubUrl}>` },
+            }),
+          }).catch(() => {});
+        }
+      } catch (e) { console.error("subscribe result email failed", e && e.message); }
+    }
 
     return json({ ok: true, brand: "taxtrim", unsub_url: unsubUrl });
   } catch (e) {

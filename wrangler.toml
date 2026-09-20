@@ -1,15 +1,10 @@
-# TaxTrim — taxtrim.mehyar.us
-# Bindings live HERE (in the repo) so every Pages deploy carries them.
-# Only true secrets stay dashboard-managed. Never `wrangler pages deploy`
-# from a checkout — this project deploys via Pages GitHub integration.
-name = "venture-taxtrim"
-pages_build_output_dir = "."
-compatibility_date = "2025-06-01"
-
-[[d1_databases]]
-binding = "LEADS_DB"
-database_name = "mehyar_leads_prod"
-database_id = "e4f22065-e3e8-4772-87a8-51d4976be042"
-
-[ai]
-binding = "AI"
+# TaxTrim Pages project config.
+# name + compatibility_date ONLY. NO [vars] section — secrets and plain env
+# vars are managed via the Cloudflare API by
+# ~/workspace/ventures/_ops/deploy_product.py (GET-merge-PATCH), because a
+# [vars] section in this file would REPLACE the project's dashboard env vars
+# on `wrangler pages deploy` (see mehyar-web incident in AGENTS.md).
+# Bindings are likewise set by the deploy script, not here, so this file
+# stays product-agnostic and secret-free.
+name = "taxtrim"
+compatibility_date = "2026-09-20"

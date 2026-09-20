@@ -166,6 +166,9 @@ table.comps td { padding: 9px 6px; border-bottom: 1px solid var(--line); font-va
 }
 .sticky-cta .btn { margin-top: 0; }
 
+/* result view needs clearance above the fixed sticky CTA (two buttons tall) */
+#result-view { padding-bottom: 180px; }
+
 /* faq */
 details.faq { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
 details.faq summary { font-weight: 700; cursor: pointer; font-size: 15px; }
