@@ -27,7 +27,7 @@
     borderline:    { label: "BORDERLINE", cls: "border", pin: 50,
                      blurb: "Your assessment is close to the comp median — an appeal is a judgment call. The packet still lays out the full case." },
     probably_fair: { label: "PROBABLY FAIR", cls: "fair", pin: 16,
-                     blurb: "Your assessment lines up with recent sales. Filing an appeal on these numbers would likely be a waste of your evening." },
+                     blurb: "Your assessment lines up with recent sales. Filing an appeal on these numbers is unlikely to succeed — save the packet for a year the math favors you." },
     unsupported_class: { label: "NOT COVERED", cls: "blocked", pin: 50,
                      blurb: "TaxTrim's appeal packets are built for Tax Class 1 (1–3 family) homes. Other classes use different Tax Commission rules we don't model yet." }
   };
